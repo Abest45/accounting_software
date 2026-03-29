@@ -1,0 +1,120 @@
+<!-- 2FA Setup Modal Component -->
+<div id="twoFASetupModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; background:var(--white); padding:30px; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.2); width:90%; max-width:500px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h2>Enable Two-Factor Authentication</h2>
+    <button id="close2FASetup" style="background:none; border:none; font-size:24px; cursor:pointer;">&times;</button>
+  </div>
+  
+  <div id="setupStep1" style="display:block;">
+    <p style="margin-bottom:15px;">Scan this QR code with your authenticator app (Google Authenticator, Microsoft Authenticator, Authy, etc.):</p>
+    <div style="text-align:center; margin:20px 0;">
+      <img id="qrCodeImage" src="" alt="QR Code" style="max-width:250px; border:2px solid #ddd; padding:10px; border-radius:4px;">
+    </div>
+    <p style="margin:15px 0; font-size:12px; color:#666;">Can't scan? Enter this code manually:</p>
+    <div style="background:#f5f5f5; padding:10px; border-radius:4px; word-break:break-all; font-family:monospace; font-size:14px; margin-bottom:15px;" id="manualSecret"></div>
+    <button id="next2FAStep" class="btn btn-primary" style="width:100%; padding:10px;">Next Step</button>
+  </div>
+
+  <div id="setupStep2" style="display:none;">
+    <p style="margin-bottom:15px;">Enter the 6-digit code from your authenticator app:</p>
+    <input id="twoFATokenInput" type="text" placeholder="000000" maxlength="6" style="width:100%; padding:10px; font-size:18px; text-align:center; letter-spacing:5px; margin-bottom:15px; border:2px solid #ddd; border-radius:4px;">
+    <p style="margin:15px 0; font-size:12px; color:#666;">Save these backup codes in a secure location. You can use them to regain access if you lose your authenticator device:</p>
+    <div style="background:#fff3cd; border:1px solid #ffc107; padding:12px; border-radius:4px; margin-bottom:15px; max-height:150px; overflow-y:auto;" id="backupCodesDisplay"></div>
+    <button id="downloadBackupCodes" class="btn" style="width:100%; padding:10px; margin-bottom:10px; background:var(--gray); color:var(--on-background); border:none; cursor:pointer;">
+      <i class="fas fa-download"></i> Download Backup Codes
+    </button>
+    <button id="verify2FASetup" class="btn btn-primary" style="width:100%; padding:10px;">Enable 2FA</button>
+  </div>
+</div>
+
+<!-- 2FA Login Modal Component -->
+<div id="twoFALoginModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; background:var(--white); padding:30px; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.2); width:90%; max-width:400px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+    <h2>Verify Your Identity</h2>
+  </div>
+  
+  <p style="margin-bottom:15px; color:#666;">Enter the 6-digit code from your authenticator app, or use a backup code:</p>
+  <input id="twoFALoginToken" type="text" placeholder="000000 or BACKUP-CODE" style="width:100%; padding:12px; font-size:16px; margin-bottom:15px; border:2px solid #ddd; border-radius:4px;">
+  <span id="twoFALoginStatus" style="display:block; color:red; font-size:12px; margin-bottom:10px;"></span>
+  <button id="verify2FALogin" class="btn btn-primary" style="width:100%; padding:12px;">Verify</button>
+</div>
+
+<!-- Modal Backdrop -->
+<div id="modalBackdrop" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
+
+<!-- Report Download Component (in Financial Reports Section) -->
+<div id="reportDownloadPanel" style="display:none; background:#f8f9fa; padding:20px; border-radius:8px; margin-bottom:20px; border:1px solid #dee2e6;">
+  <h3 style="margin-top:0; margin-bottom:15px;"><i class="fas fa-download"></i> Download Reports</h3>
+  
+  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:15px;">
+    <!-- Invoice Report -->
+    <div style="background:var(--white); padding:15px; border-radius:6px; border:1px solid #dee2e6;">
+      <h4 style="margin-top:0;">Invoice Report</h4>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; margin-bottom:5px; font-size:12px;">Start Date:</label>
+        <input type="date" id="invoiceStartDate" style="width:100%; padding:6px; border:1px solid #ddd; border-radius:4px;">
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; margin-bottom:5px; font-size:12px;">End Date:</label>
+        <input type="date" id="invoiceEndDate" style="width:100%; padding:6px; border:1px solid #ddd; border-radius:4px;">
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button id="downloadInvoicePDF" class="btn btn-primary" style="flex:1; padding:8px; font-size:12px;">PDF</button>
+        <button id="downloadInvoiceExcel" class="btn btn-secondary" style="flex:1; padding:8px; border:none; cursor:pointer; font-size:12px;">Excel</button>
+      </div>
+    </div>
+
+    <!-- P&L Report -->
+    <div style="background:var(--white); padding:15px; border-radius:6px; border:1px solid #dee2e6;">
+      <h4 style="margin-top:0;">P&L Report</h4>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; margin-bottom:5px; font-size:12px;">Start Date:</label>
+        <input type="date" id="plStartDate" style="width:100%; padding:6px; border:1px solid #ddd; border-radius:4px;">
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; margin-bottom:5px; font-size:12px;">End Date:</label>
+        <input type="date" id="plEndDate" style="width:100%; padding:6px; border:1px solid #ddd; border-radius:4px;">
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button id="downloadPLPDF" class="btn btn-primary" style="flex:1; padding:8px; font-size:12px;">PDF</button>
+        <button id="downloadPLExcel" class="btn btn-secondary" style="flex:1; padding:8px; border:none; cursor:pointer; font-size:12px;">Excel</button>
+      </div>
+    </div>
+
+    <!-- Payroll Report -->
+    <div style="background:var(--white); padding:15px; border-radius:6px; border:1px solid #dee2e6;">
+      <h4 style="margin-top:0;">Payroll Report</h4>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; margin-bottom:5px; font-size:12px;">Start Date:</label>
+        <input type="date" id="payrollStartDate" style="width:100%; padding:6px; border:1px solid #ddd; border-radius:4px;">
+      </div>
+      <div style="margin-bottom:10px;">
+        <label style="display:block; margin-bottom:5px; font-size:12px;">End Date:</label>
+        <input type="date" id="payrollEndDate" style="width:100%; padding:6px; border:1px solid #ddd; border-radius:4px;">
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button id="downloadPayrollPDF" class="btn btn-primary" style="flex:1; padding:8px; font-size:12px;">PDF</button>
+        <button id="downloadPayrollExcel" class="btn btn-secondary" style="flex:1; padding:8px; border:none; cursor:pointer; font-size:12px;">Excel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2FA Settings Component (in Settings Section) -->
+<div id="twoFASettings" style="background:white; padding:20px; border-radius:8px; border:1px solid #dee2e6; margin-bottom:20px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+    <h3 style="margin:0;">Two-Factor Authentication</h3>
+    <div id="twoFAStatus" style="padding:6px 12px; border-radius:4px; font-size:12px; font-weight:bold;">
+      <span id="twoFAStatusText">Disabled</span>
+    </div>
+  </div>
+  <p id="twoFADescription" style="margin:0 0 15px 0; color:#666; font-size:14px;">Enable 2FA to add an extra layer of security to your account. You'll need an authenticator app like Google Authenticator.</p>
+  
+  <div id="twoFAEnabledButtons" style="display:none;">
+    <button id="disableTwoFA" class="btn btn-danger" style="border:none; cursor:pointer; padding:10px 20px;">Disable 2FA</button>
+  </div>
+  
+  <div id="twoFADisabledButtons" style="display:block;">
+    <button id="enableTwoFA" class="btn btn-primary" style="padding:10px 20px;">Enable 2FA</button>
+  </div>
+</div>

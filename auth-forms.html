@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Secure Authentication Portal - Login and Register">
+    <meta name="theme-color" content="#2c3e50">
+    <title>FinAnalytics - Authentication Portal</title>
+    <link rel="stylesheet" href="auth-forms.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='50' font-size='50' fill='%232c3e50'>₹</text></svg>">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">💰</span>
+                <span class="logo-text">FinAnalytics</span>
+            </div>
+            <p class="tagline">Professional Financial Management System</p>
+        </header>
+
+        <!-- Main Form Container -->
+        <main class="form-container">
+            <!-- User Type Selector -->
+            <div class="user-type-selector">
+                <button class="user-type-btn active" data-type="user">
+                    <span class="icon">👤</span>
+                    User
+                </button>
+                <button class="user-type-btn" data-type="admin">
+                    <span class="icon">🔐</span>
+                    Admin
+                </button>
+                <div class="slider"></div>
+            </div>
+
+            <!-- Forms Wrapper -->
+            <div class="forms-wrapper">
+                <!-- USER FORMS -->
+                <div class="form-group user-forms active">
+                    <!-- User Login Form -->
+                    <form id="userLoginForm" class="auth-form active" novalidate>
+                        <h2 class="form-title">User Login</h2>
+                        <p class="form-subtitle">Access your financial dashboard</p>
+
+                        <div class="form-field">
+                            <label for="userLoginEmail" class="form-label">
+                                <span class="label-text">Email Address</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">✉️</span>
+                                <input 
+                                    type="email" 
+                                    id="userLoginEmail" 
+                                    name="email" 
+                                    placeholder="your@email.com"
+                                    autocomplete="email"
+                                    required
+                                >
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="userLoginPassword" class="form-label">
+                                <span class="label-text">Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="userLoginPassword" 
+                                    name="password"
+                                    placeholder="Enter your password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="rememberMe" value="true">
+                                <span>Remember me</span>
+                            </label>
+                            <a href="#" class="forgot-password-link" data-type="user">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Sign In</span>
+                            <span class="loading-spinner"></span>
+                        </button>
+
+                        <div class="form-divider">OR</div>
+
+                        <button type="button" class="toggle-form-btn" data-target="userSignupForm">
+                            Don't have an account? <strong>Sign up here</strong>
+                        </button>
+
+                        <div class="form-message"></div>
+                    </form>
+
+                    <!-- User Signup Form -->
+                    <form id="userSignupForm" class="auth-form" novalidate>
+                        <h2 class="form-title">Create User Account</h2>
+                        <p class="form-subtitle">Join FinAnalytics today</p>
+
+                        <div class="form-row-2col">
+                            <div class="form-field">
+                                <label for="userSignupFirstName" class="form-label">
+                                    <span class="label-text">First Name</span>
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">👤</span>
+                                    <input 
+                                        type="text" 
+                                        id="userSignupFirstName" 
+                                        name="firstName"
+                                        placeholder="John"
+                                        autocomplete="given-name"
+                                        required
+                                    >
+                                    <span class="error-icon">⚠️</span>
+                                </div>
+                                <span class="field-error"></span>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="userSignupLastName" class="form-label">
+                                    <span class="label-text">Last Name</span>
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">👤</span>
+                                    <input 
+                                        type="text" 
+                                        id="userSignupLastName" 
+                                        name="lastName"
+                                        placeholder="Doe"
+                                        autocomplete="family-name"
+                                        required
+                                    >
+                                    <span class="error-icon">⚠️</span>
+                                </div>
+                                <span class="field-error"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="userSignupEmail" class="form-label">
+                                <span class="label-text">Email Address</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">✉️</span>
+                                <input 
+                                    type="email" 
+                                    id="userSignupEmail" 
+                                    name="email"
+                                    placeholder="your@email.com"
+                                    autocomplete="email"
+                                    required
+                                >
+                                <span class="validation-icon">✓</span>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="userSignupPassword" class="form-label">
+                                <span class="label-text">Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="userSignupPassword" 
+                                    name="password"
+                                    placeholder="Min 8 characters"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                            <div class="password-strength">
+                                <div class="strength-bar"></div>
+                                <span class="strength-text">Password strength: <strong>None</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="userSignupConfirmPassword" class="form-label">
+                                <span class="label-text">Confirm Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="userSignupConfirmPassword" 
+                                    name="confirmPassword"
+                                    placeholder="Re-enter password"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="password-requirements">
+                            <p class="requirements-title">Password Requirements:</p>
+                            <ul class="requirements-list">
+                                <li data-requirement="length">At least 8 characters</li>
+                                <li data-requirement="uppercase">One uppercase letter (A-Z)</li>
+                                <li data-requirement="lowercase">One lowercase letter (a-z)</li>
+                                <li data-requirement="number">One number (0-9)</li>
+                                <li data-requirement="special">One special character (!@#$%^&*)</li>
+                            </ul>
+                        </div>
+
+                        <label class="checkbox-label checkbox-large">
+                            <input type="checkbox" name="terms" value="true" required>
+                            <span>I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></span>
+                        </label>
+
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Create Account</span>
+                            <span class="loading-spinner"></span>
+                        </button>
+
+                        <button type="button" class="toggle-form-btn" data-target="userLoginForm">
+                            Already have an account? <strong>Sign in here</strong>
+                        </button>
+
+                        <div class="form-message"></div>
+                    </form>
+                </div>
+
+                <!-- ADMIN FORMS -->
+                <div class="form-group admin-forms">
+                    <!-- Admin Login Form -->
+                    <form id="adminLoginForm" class="auth-form active" novalidate>
+                        <h2 class="form-title">Admin Login</h2>
+                        <p class="form-subtitle">Administrator Access Required</p>
+
+                        <div class="admin-badge">🔐 SECURE ADMIN PORTAL</div>
+
+                        <div class="form-field">
+                            <label for="adminLoginEmail" class="form-label">
+                                <span class="label-text">Admin Email</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">👨‍💼</span>
+                                <input 
+                                    type="email" 
+                                    id="adminLoginEmail" 
+                                    name="email"
+                                    placeholder="admin@finanalytics.com"
+                                    autocomplete="email"
+                                    required
+                                >
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminLoginPassword" class="form-label">
+                                <span class="label-text">Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="adminLoginPassword" 
+                                    name="password"
+                                    placeholder="Enter admin password"
+                                    autocomplete="current-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminLoginOTP" class="form-label">
+                                <span class="label-text">2FA Code (Optional)</span>
+                                <span class="optional">(Optional)</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔢</span>
+                                <input 
+                                    type="text" 
+                                    id="adminLoginOTP" 
+                                    name="twoFactorCode"
+                                    placeholder="6-digit code"
+                                    maxlength="6"
+                                    inputmode="numeric"
+                                    autocomplete="off"
+                                >
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="rememberMe" value="true">
+                                <span>Remember for 24 hours</span>
+                            </label>
+                            <a href="#" class="forgot-password-link" data-type="admin">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="submit-btn admin-btn">
+                            <span class="btn-text">Admin Sign In</span>
+                            <span class="loading-spinner"></span>
+                        </button>
+
+                        <button type="button" class="toggle-form-btn" data-target="adminSignupForm">
+                            Need admin access? <strong>Request registration</strong>
+                        </button>
+
+                        <div class="form-message"></div>
+                    </form>
+
+                    <!-- Admin Signup Form -->
+                    <form id="adminSignupForm" class="auth-form" novalidate>
+                        <h2 class="form-title">Admin Registration</h2>
+                        <p class="form-subtitle">Request Administrator Account</p>
+
+                        <div class="admin-badge warning">⚠️ REQUIRES APPROVAL</div>
+
+                        <div class="form-row-2col">
+                            <div class="form-field">
+                                <label for="adminSignupFirstName" class="form-label">
+                                    <span class="label-text">First Name</span>
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">👤</span>
+                                    <input 
+                                        type="text" 
+                                        id="adminSignupFirstName" 
+                                        name="firstName"
+                                        placeholder="John"
+                                        autocomplete="given-name"
+                                        required
+                                    >
+                                    <span class="error-icon">⚠️</span>
+                                </div>
+                                <span class="field-error"></span>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="adminSignupLastName" class="form-label">
+                                    <span class="label-text">Last Name</span>
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">👤</span>
+                                    <input 
+                                        type="text" 
+                                        id="adminSignupLastName" 
+                                        name="lastName"
+                                        placeholder="Smith"
+                                        autocomplete="family-name"
+                                        required
+                                    >
+                                    <span class="error-icon">⚠️</span>
+                                </div>
+                                <span class="field-error"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupEmail" class="form-label">
+                                <span class="label-text">Company Email</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">✉️</span>
+                                <input 
+                                    type="email" 
+                                    id="adminSignupEmail" 
+                                    name="email"
+                                    placeholder="admin@company.com"
+                                    autocomplete="email"
+                                    required
+                                >
+                                <span class="validation-icon">✓</span>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupPhone" class="form-label">
+                                <span class="label-text">Phone Number</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">📱</span>
+                                <input 
+                                    type="tel" 
+                                    id="adminSignupPhone" 
+                                    name="phone"
+                                    placeholder="+91 XXXXX XXXXX"
+                                    autocomplete="tel"
+                                    required
+                                >
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupCompany" class="form-label">
+                                <span class="label-text">Company Name</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🏢</span>
+                                <input 
+                                    type="text" 
+                                    id="adminSignupCompany" 
+                                    name="company"
+                                    placeholder="Your company name"
+                                    required
+                                >
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupPassword" class="form-label">
+                                <span class="label-text">Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="adminSignupPassword" 
+                                    name="password"
+                                    placeholder="Min 12 characters"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                            <div class="password-strength">
+                                <div class="strength-bar"></div>
+                                <span class="strength-text">Password strength: <strong>None</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupConfirmPassword" class="form-label">
+                                <span class="label-text">Confirm Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="adminSignupConfirmPassword" 
+                                    name="confirmPassword"
+                                    placeholder="Re-enter password"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="password-requirements">
+                            <p class="requirements-title">Password Requirements (Admin):</p>
+                            <ul class="requirements-list">
+                                <li data-requirement="length">At least 12 characters</li>
+                                <li data-requirement="uppercase">One uppercase letter (A-Z)</li>
+                                <li data-requirement="lowercase">One lowercase letter (a-z)</li>
+                                <li data-requirement="number">Two or more numbers (0-9)</li>
+                                <li data-requirement="special">Two special characters (!@#$%^&*)</li>
+                            </ul>
+                        </div>
+
+                        <label class="checkbox-label checkbox-large">
+                            <input type="checkbox" name="terms" value="true" required>
+                            <span>I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></span>
+                        </label>
+
+                        <button type="submit" class="submit-btn admin-btn">
+                            <span class="btn-text">Request Admin Access</span>
+                            <span class="loading-spinner"></span>
+                        </button>
+
+                        <button type="button" class="toggle-form-btn" data-target="adminLoginForm">
+                            Already an admin? <strong>Sign in here</strong>
+                        </button>
+
+                        <div class="form-message"></div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- Password Recovery Modal -->
+        <div class="modal" id="passwordRecoveryModal">
+            <div class="modal-content">
+                <button class="modal-close" aria-label="Close modal">✕</button>
+                
+                <div class="modal-step" data-step="1">
+                    <h2>Password Recovery</h2>
+                    <p>Enter your email address and we'll send you a recovery link.</p>
+                    
+                    <form id="passwordRecoveryForm" class="modal-form" novalidate>
+                        <input type="hidden" name="userType" value="user">
+                        
+                        <div class="form-field">
+                            <label for="recoveryEmail" class="form-label">
+                                <span class="label-text">Email Address</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">✉️</span>
+                                <input 
+                                    type="email" 
+                                    id="recoveryEmail" 
+                                    name="email"
+                                    placeholder="your@email.com"
+                                    autocomplete="email"
+                                    required
+                                >
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Send Recovery Link</span>
+                            <span class="loading-spinner"></span>
+                        </button>
+
+                        <button type="button" class="modal-close-btn">Cancel</button>
+                    </form>
+
+                    <div class="form-message"></div>
+                </div>
+
+                <div class="modal-step" data-step="2" style="display: none;">
+                    <h2>Check Your Email</h2>
+                    <p>We've sent a password recovery link to your email. The link will expire in 30 minutes.</p>
+                    
+                    <div class="recovery-status">
+                        <div class="status-icon">✉️</div>
+                        <p class="status-email"></p>
+                        <p class="status-message">Check your spam folder if you don't see the email.</p>
+                    </div>
+
+                    <button type="button" class="modal-close-btn">Close</button>
+                    <button type="button" class="submit-btn" id="resendRecoveryBtn">Resend Email</button>
+                </div>
+
+                <div class="modal-step" data-step="3" style="display: none;">
+                    <h2>Reset Your Password</h2>
+                    <p>Create a new secure password for your account.</p>
+                    
+                    <form id="passwordResetForm" class="modal-form" novalidate>
+                        <input type="hidden" name="resetToken" value="">
+                        
+                        <div class="form-field">
+                            <label for="resetPassword" class="form-label">
+                                <span class="label-text">New Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="resetPassword" 
+                                    name="password"
+                                    placeholder="Min 8 characters"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                            <div class="password-strength">
+                                <div class="strength-bar"></div>
+                                <span class="strength-text">Password strength: <strong>None</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="resetConfirmPassword" class="form-label">
+                                <span class="label-text">Confirm Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="resetConfirmPassword" 
+                                    name="confirmPassword"
+                                    placeholder="Re-enter password"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="password-requirements">
+                            <p class="requirements-title">Password Requirements:</p>
+                            <ul class="requirements-list">
+                                <li data-requirement="length">At least 8 characters</li>
+                                <li data-requirement="uppercase">One uppercase letter (A-Z)</li>
+                                <li data-requirement="lowercase">One lowercase letter (a-z)</li>
+                                <li data-requirement="number">One number (0-9)</li>
+                                <li data-requirement="special">One special character (!@#$%^&*)</li>
+                            </ul>
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <span class="btn-text">Reset Password</span>
+                            <span class="loading-spinner"></span>
+                        </button>
+
+                        <button type="button" class="modal-close-btn">Cancel</button>
+                    </form>
+
+                    <div class="form-message"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 FinAnalytics. All rights reserved. | 
+                <a href="#" target="_blank">Privacy Policy</a> | 
+                <a href="#" target="_blank">Security</a> | 
+                <a href="#" target="_blank">Contact</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- 2FA Login Modal Component -->
+    <div id="twoFALoginModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); z-index:1000; background:white; padding:30px; border-radius:8px; box-shadow:0 4px 20px rgba(0,0,0,0.2); width:90%; max-width:400px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2>Verify Your Identity</h2>
+      </div>
+      
+      <p style="margin-bottom:15px; color:#666;">Enter the 6-digit code from your authenticator app, or use a backup code:</p>
+      <input id="twoFALoginToken" type="text" inputmode="numeric" maxlength="12" placeholder="000000 or BACKUP-CODE" style="width:100%; padding:12px; font-size:16px; margin-bottom:12px; border:2px solid #ddd; border-radius:4px;">
+      <div style="display:flex; gap:8px; align-items:center; margin-bottom:10px;">
+        <span id="twoFALoginStatus" role="status" aria-live="polite" style="flex:1; color:#e74c3c; font-size:12px;"></span>
+        <span id="twoFALoginSpinner" style="display:none; width:18px; height:18px; border-radius:50%; border:2px solid rgba(0,0,0,0.1); border-top-color:var(--primary); animation:spin 800ms linear infinite;"></span>
+      </div>
+      <div style="display:flex; gap:10px;">
+        <button id="verify2FALogin" class="btn btn-primary" style="flex:1; padding:12px;">Verify</button>
+        <button id="close2FALogin" class="btn btn-secondary" style="padding:12px;">Close</button>
+      </div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    </div>
+
+    <!-- Modal Backdrop -->
+    <div id="modalBackdrop" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:999;"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.10.50/bundle/libphonenumber-js.min.js"></script>
+    <script src="components-2fa-reports.js"></script>
+    <script src="auth-forms.js"></script>
+</body>
+</html>

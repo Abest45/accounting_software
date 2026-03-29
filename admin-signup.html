@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Admin Signup - FinAnalytics">
+    <meta name="theme-color" content="#2c3e50">
+    <title>Admin Signup - FinAnalytics</title>
+    <link rel="stylesheet" href="auth-forms.css">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='50' font-size='50' fill='%232c3e50'>₹</text></svg>">
+</head>
+<body>
+    <!-- Background Elements -->
+    <div class="background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-icon">💰</span>
+                <span class="logo-text">FinAnalytics</span>
+            </div>
+            <p class="tagline">Professional Financial Management System</p>
+        </header>
+
+        <!-- Main Form Container -->
+        <main class="form-container">
+            <!-- Forms Wrapper -->
+            <div class="forms-wrapper">
+                <!-- ADMIN SIGNUP FORM -->
+                <div class="form-group admin-forms active">
+                    <!-- Admin Signup Form -->
+                    <form id="adminSignupForm" class="auth-form active" novalidate>
+                        <h2 class="form-title">Admin Registration</h2>
+                        <p class="form-subtitle">Request Administrator Account</p>
+
+                        <div class="admin-badge warning">⚠️ REQUIRES APPROVAL</div>
+
+                        <div class="form-row-2col">
+                            <div class="form-field">
+                                <label for="adminSignupFirstName" class="form-label">
+                                    <span class="label-text">First Name</span>
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">👤</span>
+                                    <input 
+                                        type="text" 
+                                        id="adminSignupFirstName" 
+                                        name="firstName"
+                                        placeholder="John"
+                                        autocomplete="given-name"
+                                        required
+                                    >
+                                    <span class="error-icon">⚠️</span>
+                                </div>
+                                <span class="field-error"></span>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="adminSignupLastName" class="form-label">
+                                    <span class="label-text">Last Name</span>
+                                    <span class="required">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-icon">👤</span>
+                                    <input 
+                                        type="text" 
+                                        id="adminSignupLastName" 
+                                        name="lastName"
+                                        placeholder="Smith"
+                                        autocomplete="family-name"
+                                        required
+                                    >
+                                    <span class="error-icon">⚠️</span>
+                                </div>
+                                <span class="field-error"></span>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupEmail" class="form-label">
+                                <span class="label-text">Company Email</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">✉️</span>
+                                <input 
+                                    type="email" 
+                                    id="adminSignupEmail" 
+                                    name="email"
+                                    placeholder="admin@company.com"
+                                    autocomplete="email"
+                                    required
+                                >
+                                <span class="validation-icon">✓</span>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupPhone" class="form-label">
+                                <span class="label-text">Phone Number</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">📱</span>
+                                <input 
+                                    type="tel" 
+                                    id="adminSignupPhone" 
+                                    name="phone"
+                                    placeholder="+91 XXXXX XXXXX"
+                                    autocomplete="tel"
+                                    required
+                                >
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupCompany" class="form-label">
+                                <span class="label-text">Company Name</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🏢</span>
+                                <input 
+                                    type="text" 
+                                    id="adminSignupCompany" 
+                                    name="company"
+                                    placeholder="Your company name"
+                                    required
+                                >
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupPassword" class="form-label">
+                                <span class="label-text">Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="adminSignupPassword" 
+                                    name="password"
+                                    placeholder="Min 12 characters"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                            <div class="password-strength">
+                                <div class="strength-bar"></div>
+                                <span class="strength-text">Password strength: <strong>None</strong></span>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label for="adminSignupConfirmPassword" class="form-label">
+                                <span class="label-text">Confirm Password</span>
+                                <span class="required">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-icon">🔒</span>
+                                <input 
+                                    type="password" 
+                                    id="adminSignupConfirmPassword" 
+                                    name="confirmPassword"
+                                    placeholder="Re-enter password"
+                                    autocomplete="new-password"
+                                    required
+                                >
+                                <button type="button" class="toggle-password" aria-label="Toggle password visibility">
+                                    <span class="toggle-icon">👁️</span>
+                                </button>
+                                <span class="error-icon">⚠️</span>
+                            </div>
+                            <span class="field-error"></span>
+                        </div>
+
+                        <div class="password-requirements">
+                            <p class="requirements-title">Password Requirements (Admin):</p>
+                            <ul class="requirements-list">
+                                <li data-requirement="length">At least 12 characters</li>
+                                <li data-requirement="uppercase">One uppercase letter (A-Z)</li>
+                                <li data-requirement="lowercase">One lowercase letter (a-z)</li>
+                                <li data-requirement="number">Two or more numbers (0-9)</li>
+                                <li data-requirement="special">Two special characters (!@#$%^&*)</li>
+                            </ul>
+                        </div>
+
+                        <label class="checkbox-label checkbox-large">
+                            <input type="checkbox" name="terms" value="true" required>
+                            <span>I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a></span>
+                        </label>
+
+                        <button type="submit" class="submit-btn admin-btn">
+                            <span class="btn-text">Request Admin Access</span>
+                            <span class="loading-spinner"></span>
+                        </button>
+
+                        <a href="admin-login.html" class="toggle-form-btn">
+                            Already an admin? <strong>Sign in here</strong>
+                        </a>
+
+                        <div class="form-message"></div>
+                    </form>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>&copy; 2025 FinAnalytics. All rights reserved. | 
+                <a href="#" target="_blank">Privacy Policy</a> | 
+                <a href="#" target="_blank">Security</a> | 
+                <a href="#" target="_blank">Contact</a>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/libphonenumber-js@1.10.50/bundle/libphonenumber-js.min.js"></script>
+    <script src="auth-forms.js"></script>
+</body>
+</html>
