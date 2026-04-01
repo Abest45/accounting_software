@@ -36,6 +36,17 @@ This guide shows exactly how to provision and connect the PostgreSQL database fo
    - `DB_USER=postgres` (or your DB username)
    - `DB_PASSWORD=<your_password>`
    - `JWT_SECRET=<strong_secret>`
+   - `REFRESH_TOKEN_SECRET=<strong_refresh_secret>`
+   - `REFRESH_TOKEN_EXPIRE_MS=604800000` (7 days)
+   - `FRONTEND_URL=http://localhost:3000`
+   - `SMTP_HOST=smtp.example.com`
+   - `SMTP_PORT=587`
+   - `SMTP_SECURE=false`
+   - `SMTP_USER=<smtp_user>`
+   - `SMTP_PASSWORD=<smtp_password>`
+   - `SMTP_FROM_EMAIL=noreply@example.com`
+   - `SUPER_ADMIN_EMAILS=admin@example.com`
+   - `CORS_ORIGIN=http://localhost:3000`
 
 ## 3. Create Postgres database
 

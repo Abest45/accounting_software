@@ -381,6 +381,113 @@ If you're having trouble, contact: support@finanalytics.com
     }
 
     /**
+     * Send admin approval request to super admin
+     */
+    async sendAdminApprovalRequestEmail(adminEmail, firstName, approvalLink) {
+        try {
+            const htmlContent = `
+                <p>Hi Admin,</p>
+                <p>A new admin registration request has been received for <strong>${adminEmail}</strong>.</p>
+                <p>Please approve or reject this request by clicking the link below:</p>
+                <p><a href="${approvalLink}">Approve Admin Account</a></p>
+                <p>This link expires in 24 hours.</p>
+            `;
+
+            const plainTextContent = `New admin registration request for ${adminEmail}. Approve at ${approvalLink}`;
+
+            const mailOptions = {
+                from: `"FinAnalytics" <${process.env.SMTP_FROM_EMAIL || 'noreply@finanalytics.com'}>`,
+                to: process.env.SUPER_ADMIN_EMAILS || process.env.SMTP_USER || adminEmail,
+                subject: 'New Admin Approval Request - FinAnalytics',
+                html: htmlContent,
+                text: plainTextContent
+            };
+
+            const result = await this.transporter.sendMail(mailOptions);
+            logger.info(`Admin approval request email sent.`);
+
+            if (process.env.NODE_ENV === 'development') {
+                const previewUrl = nodemailer.getTestMessageUrl(result);
+                if (previewUrl) {
+                    logger.info(`Email preview: ${previewUrl}`);
+                }
+            }
+
+            return { success: true, messageId: result.messageId };
+        } catch (error) {
+            logger.error('Failed to send admin approval request email:', error);
+            throw new Error('Failed to send admin approval request email');
+        }
+    }
+
+    /**
+     * Send user approval request to super admin
+     */
+    async sendUserApprovalRequestEmail(userEmail, firstName, approvalLink) {
+        try {
+            const htmlContent = `
+                <p>Hi Admin,</p>
+                <p>A new user registration request has been received for <strong>${userEmail}</strong>.</p>
+                <p>User name: <strong>${firstName}</strong></p>
+                <p>Please approve this account by clicking the link below:</p>
+                <p><a href="${approvalLink}">Approve User Account</a></p>
+                <p>This link expires in 24 hours.</p>
+            `;
+
+            const plainTextContent = `New user registration request for ${userEmail}. Approve at ${approvalLink}`;
+
+            const mailOptions = {
+                from: `"FinAnalytics" <${process.env.SMTP_FROM_EMAIL || 'noreply@finanalytics.com'}>`,
+                to: process.env.SUPER_ADMIN_EMAILS || process.env.SMTP_USER || userEmail,
+                subject: 'New User Approval Request - FinAnalytics',
+                html: htmlContent,
+                text: plainTextContent
+            };
+
+            const result = await this.transporter.sendMail(mailOptions);
+            logger.info(`User approval request email sent to admin for ${userEmail}`);
+
+            if (process.env.NODE_ENV === 'development') {
+                const previewUrl = nodemailer.getTestMessageUrl(result);
+                if (previewUrl) {
+                    logger.info(`Email preview: ${previewUrl}`);
+                }
+            }
+
+            return { success: true, messageId: result.messageId };
+        } catch (error) {
+            logger.error('Failed to send user approval request email:', error);
+            throw new Error('Failed to send user approval request email');
+        }
+    }
+
+    /**
+     * Send admin approval granted email
+     */
+    async sendAdminApprovedEmail(email, firstName) {
+        try {
+            const htmlContent = `
+                <p>Hi ${this.escapeHtml(firstName)},</p>
+                <p>Your admin account has been approved. You can now log in at <a href="${process.env.FRONTEND_URL || 'http://localhost:3000'}">FinAnalytics</a>.</p>
+            `;
+
+            const mailOptions = {
+                from: `"FinAnalytics" <${process.env.SMTP_FROM_EMAIL || 'noreply@finanalytics.com'}>`,
+                to: email,
+                subject: 'Admin Account Approved - FinAnalytics',
+                html: htmlContent
+            };
+
+            const result = await this.transporter.sendMail(mailOptions);
+            logger.info(`Admin approved notification email sent to ${email}`);
+            return { success: true, messageId: result.messageId };
+        } catch (error) {
+            logger.error('Failed to send admin approved email:', error);
+            throw new Error('Failed to send admin approved email');
+        }
+    }
+
+    /**
      * Send welcome email
      */
     async sendWelcomeEmail(email, firstName, adminPanel = false) {

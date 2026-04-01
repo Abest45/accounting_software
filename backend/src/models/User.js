@@ -50,6 +50,21 @@ module.exports = (sequelize) => {
       type: DataTypes.BOOLEAN,
       defaultValue: true
     },
+    isApproved: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      comment: 'User must be approved by super admin before allowing access'
+    },
+    approvalToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+      comment: 'Admin approval token for super admin to approve new admin registrations'
+    },
+    approvalTokenExpires: {
+      type: DataTypes.DATE,
+      allowNull: true,
+      comment: 'Approval token expiration date'
+    },
     lastLogin: {
       type: DataTypes.DATE,
       allowNull: true

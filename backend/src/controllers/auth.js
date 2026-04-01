@@ -6,7 +6,6 @@ const { isValidEmail, isStrongPassword, sanitizeInput } = require('../utils/vali
 const emailService = require('../utils/email');
 const Logger = require('../utils/logger');
 const { asyncHandler } = require('../middleware/errorHandler');
-const crypto = require('crypto');
 const hash = (value) => crypto.createHash('sha256').update(value).digest('hex');
 
 const register = asyncHandler(async (req, res) => {
@@ -49,29 +48,51 @@ const register = asyncHandler(async (req, res) => {
   // Hash password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  // Create user
+  // Create approval token for super admin review (24h expiry)
+  const approvalToken = crypto.randomBytes(32).toString('hex');
+  const approvalTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+  // Create user in pending approval state
   const user = await db.User.create({
     username: sanitizeInput(username),
     email: email.toLowerCase(),
     password: hashedPassword,
     firstName: sanitizeInput(firstName),
     lastName: sanitizeInput(lastName),
-    role: role || 'viewer'
+    role: role || 'viewer',
+    isActive: false,
+    isApproved: false,
+    approvalToken,
+    approvalTokenExpires,
+    metadata: {
+      approvalStatus: 'pending',
+      registrationDate: new Date()
+    }
   });
 
-  // Generate token
-  const token = generateToken(user.id, user.email, user.role);
+  // Send approval request email to super admins
+  const approvalTokenUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/api/auth/approve-user?token=${approvalToken}`;
+  try {
+    await emailService.sendUserApprovalRequestEmail(user.email, user.firstName || user.email, approvalTokenUrl);
+    Logger.info(`Approval request sent for new user ${user.email}`);
+  } catch (emailErr) {
+    Logger.error('Failed to send user approval request email:', emailErr);
+  }
 
-  Logger.info(`New user registered: ${user.email}`);
+  // Respond without access token while pending approval
+  const token = null;
+
+  Logger.info(`New user registered and pending approval: ${user.email}`);
 
   res.status(201).json({
     success: true,
-    message: 'User registered successfully',
+    message: 'User registered successfully. Pending super admin approval.',
     data: {
       userId: user.id,
       username: user.username,
       email: user.email,
       role: user.role,
+      approvalStatus: 'pending',
       token
     }
   });
@@ -103,6 +124,14 @@ const login = asyncHandler(async (req, res) => {
     return res.status(403).json({
       success: false,
       message: 'User account is inactive'
+    });
+  }
+
+  // Check if user is approved by super admin
+  if (!user.isApproved) {
+    return res.status(403).json({
+      success: false,
+      message: 'User account is pending approval'
     });
   }
 
@@ -532,6 +561,10 @@ const adminRegister = asyncHandler(async (req, res) => {
     // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Generate approval token (expires in 24 hours)
+    const approvalToken = crypto.randomBytes(32).toString('hex');
+    const approvalTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+
     // Create admin registration request
     const user = await db.User.create({
       email: email.toLowerCase(),
@@ -541,6 +574,9 @@ const adminRegister = asyncHandler(async (req, res) => {
       phone: sanitizeInput(phone),
       role: 'pending_admin',
       isActive: false,
+      isApproved: false,
+      approvalToken,
+      approvalTokenExpires,
       metadata: {
         company: sanitizeInput(company),
         registrationDate: new Date(),
@@ -550,8 +586,16 @@ const adminRegister = asyncHandler(async (req, res) => {
 
     Logger.info(`Admin registration request received from ${email}`);
 
-    // Notify admin about the request
-    // TODO: Send email to super admin for approval
+    // Notify super admin(s) for approval
+    const superAdminEmails = (process.env.SUPER_ADMIN_EMAILS || process.env.SMTP_USER || '').split(',').map((e) => e.trim()).filter(Boolean);
+    const approvalTokenUrl = `${process.env.FRONTEND_URL || 'http://localhost:3000'}/api/auth/approve-admin?token=${approvalToken}`;
+
+    try {
+      await emailService.sendAdminApprovalRequestEmail(email, firstName || email, approvalTokenUrl);
+      Logger.info(`Admin approval request email sent for ${email}`);
+    } catch (err) {
+      Logger.error('Failed to send admin approval request email:', err);
+    }
 
     res.status(201).json({
       success: true,
@@ -663,6 +707,90 @@ const adminLogin = asyncHandler(async (req, res) => {
   });
 });
 
+const approveAdmin = asyncHandler(async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).json({ success: false, message: 'Approval token is required' });
+  }
+
+  const user = await db.User.findOne({
+    where: {
+      approvalToken: token,
+      approvalTokenExpires: {
+        [db.Sequelize.Op.gt]: new Date()
+      }
+    }
+  });
+
+  if (!user) {
+    return res.status(400).json({ success: false, message: 'Invalid or expired approval token' });
+  }
+
+  user.isApproved = true;
+  user.isActive = true;
+  user.role = 'admin';
+  user.approvalToken = null;
+  user.approvalTokenExpires = null;
+  user.metadata = {
+    ...user.metadata,
+    approvalStatus: 'approved',
+    approvedAt: new Date()
+  };
+
+  await user.save();
+
+  try {
+    await emailService.sendAdminApprovedEmail(user.email, user.firstName || user.email);
+  } catch (err) {
+    Logger.error('Failed to send admin approved email:', err);
+  }
+
+  res.json({ success: true, message: 'Admin account has been approved and activated.' });
+});
+
+const approveUser = asyncHandler(async (req, res) => {
+  const { token } = req.query;
+
+  if (!token) {
+    return res.status(400).json({ success: false, message: 'Approval token is required' });
+  }
+
+  const user = await db.User.findOne({
+    where: {
+      approvalToken: token,
+      approvalTokenExpires: {
+        [db.Sequelize.Op.gt]: new Date()
+      }
+    }
+  });
+
+  if (!user) {
+    return res.status(400).json({ success: false, message: 'Invalid or expired approval token' });
+  }
+
+  user.isApproved = true;
+  user.isActive = true;
+  if (user.role === 'pending_admin') user.role = 'admin';
+  user.approvalToken = null;
+  user.approvalTokenExpires = null;
+  user.metadata = {
+    ...user.metadata,
+    approvalStatus: 'approved',
+    approvedAt: new Date()
+  };
+
+  await user.save();
+
+  try {
+    await emailService.sendWelcomeEmail(user.email, user.firstName || user.email, user.role === 'admin');
+  } catch (err) {
+    Logger.error('Failed to send welcome email after approval:', err);
+  }
+
+  res.json({ success: true, message: 'User account has been approved and activated.' });
+});
+
 module.exports = {
   register,
   login,
@@ -673,5 +801,6 @@ module.exports = {
   validateResetToken,
   resetPassword,
   adminRegister,
-  adminLogin
-};
+  adminLogin,
+  approveAdmin,
+  approveUser

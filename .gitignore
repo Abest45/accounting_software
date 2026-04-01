@@ -1,1 +1,15 @@
-# Dependencies\nnode_modules/\n\n# Environment\n.env\n\n# Editor/OS\n.vscode/\n*.log\n.DS_Store\nThumbs.db\n
+# Dependencies
+node_modules/
+
+# Environment
+.env
+
+# Editor/OS
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
+
+# Node lockfile
+package-lock.json
+backend/package-lock.json

@@ -20,6 +20,8 @@ router.post('/reset-password', asyncHandler(authController.resetPassword));
 // Admin routes
 router.post('/admin/register', asyncHandler(authController.adminRegister));
 router.post('/admin/login', asyncHandler(authController.adminLogin));
+router.get('/approve-admin', asyncHandler(authController.approveAdmin));
+router.get('/approve-user', asyncHandler(authController.approveUser));
 
 // Protected routes
 router.put('/profile', authenticateToken, asyncHandler(authController.updateProfile));
