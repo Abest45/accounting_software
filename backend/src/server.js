@@ -30,6 +30,7 @@ const payrollRoutes = require('./routes/payroll');
 const dashboardRoutes = require('./routes/dashboard');
 const twoFactorAuthRoutes = require('./routes/twoFactorAuth');
 const reportsRoutes = require('./routes/reports');
+const adminRoutes = require('./routes/admin');
 
 const app = express();
 const server = http.createServer(app);
@@ -165,7 +166,7 @@ app.use('/api/reports', reportsRoutes);
 app.use('/api/2fa', twoFactorAuthRoutes);
 
 // Admin routes
-app.use('/api/admin', authMiddleware, authorizeRole('admin'));
+app.use('/api/admin', authMiddleware, authorizeRole('super-admin'), adminRoutes);
 
 // ==================== ERROR HANDLING ====================
 

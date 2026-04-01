@@ -636,7 +636,7 @@ const adminLogin = asyncHandler(async (req, res) => {
     where: { email: email.toLowerCase() }
   });
 
-  if (!user || !['admin', 'manager'].includes(user.role)) {
+  if (!user || !['super-admin', 'admin', 'manager'].includes(user.role)) {
     Logger.warn(`Admin login attempt with invalid credentials: ${email}`);
     return res.status(401).json({
       success: false,
@@ -791,6 +791,64 @@ const approveUser = asyncHandler(async (req, res) => {
   res.json({ success: true, message: 'User account has been approved and activated.' });
 });
 
+const getPendingUsers = asyncHandler(async (req, res) => {
+  const pendingUsers = await db.User.findAll({
+    where: {
+      isApproved: false,
+      isActive: false
+    },
+    attributes: ['id', 'username', 'email', 'firstName', 'lastName', 'role', 'metadata', 'createdAt']
+  });
+
+  res.json({
+    success: true,
+    data: pendingUsers,
+    message: 'Pending users retrieved successfully'
+  });
+});
+
+const approveUserById = asyncHandler(async (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ success: false, message: 'User ID is required' });
+  }
+
+  const user = await db.User.findByPk(userId);
+
+  if (!user) {
+    return res.status(404).json({ success: false, message: 'User not found' });
+  }
+
+  if (user.isApproved) {
+    return res.status(400).json({ success: false, message: 'User is already approved' });
+  }
+
+  user.isApproved = true;
+  user.isActive = true;
+  if (user.role === 'pending_admin') {
+    user.role = 'admin';
+  }
+  user.approvalToken = null;
+  user.approvalTokenExpires = null;
+  user.metadata = {
+    ...user.metadata,
+    approvalStatus: 'approved',
+    approvedBy: req.user.userId,
+    approvedAt: new Date()
+  };
+
+  await user.save();
+
+  try {
+    await emailService.sendWelcomeEmail(user.email, user.firstName || user.email, user.role === 'admin');
+  } catch (err) {
+    Logger.error('Failed to send welcome email after approval:', err);
+  }
+
+  res.json({ success: true, message: 'User account has been approved and activated.' });
+});
+
 module.exports = {
   register,
   login,
@@ -803,4 +861,6 @@ module.exports = {
   adminRegister,
   adminLogin,
   approveAdmin,
-  approveUser
+  approveUser,
+  getPendingUsers,
+  approveUserById

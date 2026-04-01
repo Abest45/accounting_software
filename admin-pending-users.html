@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Pending User Approvals - FinAnalytics</title>
+    <link rel="stylesheet" href="finance.css">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f5f7fb; margin:0; padding:20px; }
+        .panel { max-width:1200px; margin:0 auto; background:#fff; border-radius:8px; padding:24px; box-shadow:0 2px 16px rgba(0,0,0,0.08); }
+        h1 { margin-bottom: 12px; font-size: 24px; color: #2c3e50; }
+        .status { margin-bottom: 14px; }
+        table { width:100%; border-collapse: collapse; margin-top:12px; }
+        th, td { text-align:left; padding:10px; border-bottom:1px solid #e6e9ef; }
+        th { background:#f8f9fb; font-weight:600; }
+        .button { padding: 6px 12px; border: none; border-radius: 4px; cursor:pointer; color:#fff; background:#2c3e50; }
+        .button:disabled { background:#8b98a8; cursor:not-allowed; }
+        .tag { padding: 2px 8px; border-radius: 4px; font-size:12px; display:inline-block; }
+        .tag.pending { background:#fff3cd; color:#856404; }
+        .tag.approved { background:#d4edda; color:#155724; }
+        a { text-decoration:none; color:#3498db; }
+    </style>
+</head>
+<body>
+    <div class="panel">
+        <h1>Pending User Approval Panel</h1>
+        <div class="status" id="statusText">Fetching pending users ...</div>
+        <table id="pendingUsersTable" aria-label="Pending users table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Requested</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <p style="margin-top:20px; font-size:14px; color:#69707a;">Go back to <a href="index.html">Dashboard</a>.</p>
+    </div>
+
+    <script>
+    (function () {
+        const statusText = document.getElementById('statusText');
+        const tableBody = document.querySelector('#pendingUsersTable tbody');
+        const token = localStorage.getItem('sessionToken');
+        const api = (path, method = 'GET', body) => {
+            return fetch(`/api/admin${path}`, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token ? `Bearer ${token}` : ''
+                },
+                body: body ? JSON.stringify(body) : undefined,
+                credentials: 'include'
+            }).then(async res => {
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.message || 'API error');
+                return data;
+            });
+        };
+
+        async function loadPending() {
+            tableBody.innerHTML = '<tr><td colspan="6">Loading...</td></tr>';
+            try {
+                const response = await api('/pending-users', 'GET');
+                const users = response.data || [];
+                if (!users.length) {
+                    tableBody.innerHTML = '<tr><td colspan="6">No pending approvals found.</td></tr>';
+                    statusText.textContent = 'No pending users at this time.';
+                    return;
+                }
+
+                statusText.textContent = `Pending users: ${users.length}`;
+                tableBody.innerHTML = users.map(user => {
+                    const requestDate = new Date(user.createdAt).toLocaleString();
+                    const isAdmin = ['admin', 'super-admin', 'pending_admin'].includes(user.role);
+                    return `
+                        <tr>
+                            <td>${user.firstName || ''} ${user.lastName || ''} <strong>(${user.username || 'n/a'})</strong></td>
+                            <td>${user.email}</td>
+                            <td>${user.role} ${isAdmin ? '<span class="tag pending">admin</span>' : ''}</td>
+                            <td>${requestDate}</td>
+                            <td><span class="tag pending">pending</span></td>
+                            <td>
+                                <button class="button" data-user-id="${user.id}">Approve</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+                tableBody.querySelectorAll('button[data-user-id]').forEach(btn => {
+                    btn.addEventListener('click', async () => {
+                        const userId = btn.getAttribute('data-user-id');
+                        btn.disabled = true;
+                        btn.textContent = 'Approving...';
+                        try {
+                            await api('/approve-user', 'POST', { userId });
+                            statusText.textContent = `User approved successfully`;
+                            await loadPending();
+                        } catch (err) {
+                            statusText.textContent = `Failed approve: ${err.message}`;
+                            btn.disabled = false;
+                            btn.textContent = 'Approve';
+                        }
+                    });
+                });
+            } catch (error) {
+                tableBody.innerHTML = '<tr><td colspan="6">Unable to fetch pending users.</td></tr>';
+                statusText.textContent = `Error: ${error.message}`;
+            }
+        }
+
+        if (!token) {
+            statusText.textContent = 'No session token found. Please login as super-admin first.';
+            tableBody.innerHTML = '<tr><td colspan="6">Login required.</td></tr>';
+            return;
+        }
+
+        loadPending();
+    })();
+    </script>
+</body>
+</html>
